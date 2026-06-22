@@ -1,0 +1,68 @@
+configuration:
+
+  backupStorageLocation:
+
+    - name: default
+      provider: aws
+      bucket: velero-backups
+      default: true
+
+      config:
+        region: ap-south-1
+
+  volumeSnapshotLocation:
+
+    - name: default
+      provider: aws
+
+      config:
+        region: ap-south-1
+
+initContainers:
+
+  - name: velero-plugin-for-aws
+
+    image: velero/velero-plugin-for-aws:v1.13.0
+
+    imagePullPolicy: IfNotPresent
+
+    volumeMounts:
+      - mountPath: /target
+        name: plugins
+
+serviceAccount:
+  server:
+    create: false
+    name: velero
+
+resources:
+
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+snapshotsEnabled: true
+
+deployNodeAgent: true
+
+schedules:
+
+  daily-backup:
+    disabled: false
+
+    schedule: "0 2 * * *"
+
+    template:
+
+      ttl: 720h
+
+      includedNamespaces:
+        - "*"
+
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1

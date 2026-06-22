@@ -1,0 +1,70 @@
+# ==========================
+# Terraform
+# ==========================
+*.tfstate
+*.tfstate.*
+crash.log
+override.tf
+override.tf.json
+*.plan
+.terraform/
+.terraform.lock.hcl
+
+# Ignore variable files containing secrets
+*.tfvars
+terraform.tfvars
+
+# ==========================
+# Secrets / Credentials
+# ==========================
+secrets.tf
+*.pem
+*.key
+*.crt
+*.env
+.env.*
+
+# ==========================
+# Python
+# ==========================
+__pycache__/
+*.pyc
+
+# ==========================
+# Docker
+# ==========================
+*.dockerfile~
+
+# ==========================
+# Kubernetes temp files
+# ==========================
+*.yaml~
+*.yml~
+kubeconfig
+.kube/
+
+# ==========================
+# Jenkins
+# ==========================
+jenkins_home/
+
+# ==========================
+# IDE / OS
+# ==========================
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# ==========================
+# SSH Keys (local only)
+# ==========================
+bastion_key
+
+# ==========================
+# Optional: Logs / Local files
+# ==========================
+*.log
+
+ansible/group_vars/**/vault*.yml
+ansible/group_vars/**/vault*.yaml

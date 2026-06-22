@@ -1,0 +1,14 @@
+replicaCount: 1
+image:
+  repository: 123456789012.dkr.ecr.ap-south-1.amazonaws.com/frontend
+  tag: dev
+containerPort: 3000
+resources:
+  requests: { cpu: 100m, memory: 128Mi }
+  limits: { cpu: 250m, memory: 256Mi }
+autoscaling: { minReplicas: 1, maxReplicas: 2, targetCPUUtilizationPercentage: 70 }
+domain: dev.hyper-platform.local
+environment: dev
+dbPassword: dev-secret
+secretProvider:
+  objectName: frontend-db-password

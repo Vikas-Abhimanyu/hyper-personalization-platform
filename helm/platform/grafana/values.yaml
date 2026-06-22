@@ -1,0 +1,76 @@
+replicas: 2
+
+admin:
+  existingSecret: grafana-admin-secret
+  userKey: admin-user
+  passwordKey: admin-password
+
+persistence:
+  enabled: true
+  storageClassName: gp3
+  accessModes:
+    - ReadWriteOnce
+  size: 10Gi
+
+resources:
+  requests:
+    cpu: 200m
+    memory: 512Mi
+
+  limits:
+    cpu: 1
+    memory: 1Gi
+
+service:
+  type: ClusterIP
+
+grafana.ini:
+
+  server:
+    root_url: "%(protocol)s://%(domain)s/"
+    serve_from_sub_path: false
+
+  users:
+    allow_sign_up: false
+
+  security:
+    disable_gravatar: true
+
+  auth.anonymous:
+    enabled: false
+
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+
+    datasources:
+      - name: Prometheus
+        type: prometheus
+        access: proxy
+        isDefault: true
+        url: http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090
+
+dashboardProviders:
+  dashboardproviders.yaml:
+    apiVersion: 1
+
+    providers:
+      - name: default
+        orgId: 1
+        folder: ""
+        type: file
+        disableDeletion: false
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards/default
+
+sidecar:
+  dashboards:
+    enabled: true
+
+  datasources:
+    enabled: true
+
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1

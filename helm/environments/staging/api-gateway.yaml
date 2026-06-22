@@ -1,0 +1,14 @@
+replicaCount: 2
+image:
+  repository: 123456789012.dkr.ecr.ap-south-1.amazonaws.com/api-gateway
+  tag: staging
+containerPort: 8080
+resources:
+  requests: { cpu: 200m, memory: 512Mi }
+  limits: { cpu: 500m, memory: 1Gi }
+autoscaling: { minReplicas: 2, maxReplicas: 4, targetCPUUtilizationPercentage: 70 }
+domain: staging.hyper-platform.local
+environment: staging
+dbPassword: staging-api-gateway-secret
+secretProvider:
+  objectName: api-gateway-db-password

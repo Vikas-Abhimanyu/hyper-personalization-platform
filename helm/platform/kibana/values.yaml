@@ -1,0 +1,28 @@
+replicas: 2
+
+resources:
+  requests:
+    cpu: 200m
+    memory: 512Mi
+
+  limits:
+    cpu: 1
+    memory: 1Gi
+
+elasticsearchHosts: "http://elasticsearch-master.logging.svc.cluster.local:9200"
+
+service:
+  type: ClusterIP
+
+podDisruptionBudget:
+  maxUnavailable: 1
+
+healthCheckPath: /api/status
+
+protocol: http
+
+serverHost: "0.0.0.0"
+
+extraEnvs:
+  - name: SERVER_PUBLICBASEURL
+    value: "https://kibana.example.com"

@@ -1,0 +1,12 @@
+replicaCount: 2
+image:
+  repository: 123456789012.dkr.ecr.ap-south-1.amazonaws.com/frontend
+  tag: staging
+containerPort: 3000
+resources:
+  requests: { cpu: 200m, memory: 256Mi }
+  limits: { cpu: 500m, memory: 512Mi }
+autoscaling: { minReplicas: 2, maxReplicas: 4, targetCPUUtilizationPercentage: 70 }
+domain: staging.hyper-platform.local
+environment: staging
+

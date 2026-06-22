@@ -1,0 +1,58 @@
+pipeline {
+  agent any
+  parameters {
+    choice(name: 'ENV', choices: ['dev', 'staging', 'prod'], description: 'Target environment')
+  }
+  environment {
+    AWS_CREDS = credentials('aws-jenkins-creds')
+    TF_VAR_env = "${params.ENV}"
+  }
+  stages {
+    stage('Checkout') {
+      steps {
+        checkout scm
+      }
+    }
+    stage('Validate') {
+      steps {
+        sh 'terraform fmt -check'
+        sh 'terraform validate'
+      }
+    }
+    stage('Init') {
+      steps {
+        sh "terraform init -backend-config=backend-${params.ENV}.tfvars"
+      }
+    }
+    stage('Plan') {
+      steps {
+        sh "terraform plan -var-file=vars/${params.ENV}.tfvars -out=tfplan"
+      }
+    }
+    stage('Approval') {
+      when {
+        expression { params.ENV == 'prod' }
+      }
+      steps {
+        input message: "Approve apply to ${params.ENV}?"
+      }
+    }
+    stage('Apply') {
+      steps {
+        sh "terraform apply tfplan"
+      }
+    }
+  }
+  post {
+    success {
+      mail to: 'devops-team@example.com',
+           subject: "Terraform ${params.ENV} Apply Success",
+           body: "Terraform apply completed successfully for ${params.ENV}."
+    }
+    failure {
+      mail to: 'devops-team@example.com',
+           subject: "Terraform ${params.ENV} Pipeline Failed",
+           body: "Pipeline failed during ${currentBuild.currentResult}. Please check Jenkins logs."
+    }
+  }
+}

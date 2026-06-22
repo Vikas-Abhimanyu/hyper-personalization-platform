@@ -1,0 +1,29 @@
+crds:
+  enabled: true
+
+replicaCount: 2
+
+prometheus:
+  enabled: true
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
+
+webhook:
+  replicaCount: 2
+
+cainjector:
+  replicaCount: 2
+
+startupapicheck:
+  enabled: true

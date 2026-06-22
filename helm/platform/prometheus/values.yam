@@ -1,0 +1,85 @@
+fullnameOverride: kube-prometheus-stack
+
+crds:
+  enabled: true
+
+defaultRules:
+  create: true
+
+alertmanager:
+  enabled: true
+
+  alertmanagerSpec:
+    replicas: 2
+
+    storage:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: gp3
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 10Gi
+
+prometheus:
+
+  prometheusSpec:
+
+    replicas: 2
+
+    retention: 15d
+
+    retentionSize: 45GB
+
+    scrapeInterval: 30s
+
+    evaluationInterval: 30s
+
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: gp3
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 50Gi
+
+    resources:
+      requests:
+        cpu: 500m
+        memory: 2Gi
+
+      limits:
+        cpu: 2
+        memory: 4Gi
+
+    podMonitorSelectorNilUsesHelmValues: false
+    serviceMonitorSelectorNilUsesHelmValues: false
+
+grafana:
+  enabled: false
+
+kubeStateMetrics:
+  enabled: true
+
+nodeExporter:
+  enabled: true
+
+prometheusOperator:
+
+  resources:
+    requests:
+      cpu: 200m
+      memory: 256Mi
+
+    limits:
+      cpu: 1
+      memory: 1Gi
+
+  admissionWebhooks:
+    enabled: true
+
+  tls:
+    enabled: true
